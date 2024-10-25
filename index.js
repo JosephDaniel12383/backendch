@@ -6,14 +6,16 @@ const mongoose = require("mongoose")
 
 //! Moduloes do express.
 const cors = require("cors");
-const authRouter = require("./routes/auth_user_routes")
-const ReworkMaterialRouter = require("./routes/rework_material_route")
+const authRouter = require("./routes/auth_user_routes");
+const ReworkMaterialRouter = require("./routes/rework_material_route");
+const TravaRouter = require("./routes/trava_route");
 
 //! middleware registra e muda rotas.
 app.use(express.json());
 app.use(cors()); //!ativa o CORS para todas as rotas e origens
 app.use(authRouter);
 app.use(ReworkMaterialRouter);
+app.use(TravaRouter);
 
 //! start no banco de dados do MongoDB.
 mongoose.connect(DB).then(() => {
