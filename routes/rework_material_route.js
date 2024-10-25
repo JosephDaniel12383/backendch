@@ -25,47 +25,18 @@ ReworkMaterialRouter.post('/api/rework', authenticateToken, async (req, res) => 
     }
 });
 
-//! Rota para obter perdas agrupadas por data e material
 ReworkMaterialRouter.get('/api/rework', authenticateToken, async (req, res) => {
     try {
-        const reworkData = await ReworkMaterial.aggregate([
-            {
-                $group: {
-                    _id: {
-                        date: { $dateToString: { format: "%Y-%m-%d", date: "$hora" } },
-                        material: "$opcaoSelecionada"
-                    },
-                    totalPeso: { $sum: "$peso" },
-                    count: { $sum: 1 }
-                }
-            },
-            {
-                $group: {
-                    _id: "$_id.date",
-                    materials: {
-                        $push: {
-                            material: "$_id.material",
-                            quantidade: "$count",
-                            pesoTotal: "$totalPeso"
-                        }
-                    }
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    date: "$_id",
-                    materials: 1
-                }
-            },
-            { $sort: { date: 1 } }
-        ]);
-
-        res.status(200).json(reworkData);
+        // Busca todos os materiais no banco de dados associados ao usuário autenticado
+        const materiais = await ReworkMaterial.find({ userID: req.user.id });
+        
+        // Retorna a lista de materiais em formato JSON
+        res.status(200).json(materiais);
     } catch (error) {
-        console.error('Erro ao obter as perdas diárias:', error);
-        res.status(500).json({ message: 'Erro ao obter as perdas diárias', error: error.message });
+        console.error(error); // Log de erro para depuração
+        res.status(500).json({ message: 'Erro ao carregar dados de materiais retrabalhados', error: error.message });
     }
+
 });
 
 module.exports = ReworkMaterialRouter;
