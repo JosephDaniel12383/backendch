@@ -25,10 +25,10 @@ ReworkMaterialRouter.post('/api/rework', authenticateToken, async (req, res) => 
     }
 });
 
-ReworkMaterialRouter.get('/api/rework', authenticateToken, async (req, res) => {
+ReworkMaterialRouter.get('/api/rework',  async (req, res) => {
     try {
         // Busca todos os materiais no banco de dados associados ao usuário autenticado
-        const materiais = await ReworkMaterial.find({ userID: req.user.id });
+        const materiais = await ReworkMaterial.find();
         
         // Retorna a lista de materiais em formato JSON
         res.status(200).json(materiais);
